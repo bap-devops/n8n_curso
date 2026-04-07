@@ -1,0 +1,25 @@
+docker run <params>
+
+#Se utiliza para crear un contenedor, se le puede pasar varios argumentos, los más utilizados son:
+
+--name: Indica un nombre del contenedor
+-d: Correr el contenedor en segundo plano
+-p: Expone un puerto
+-e: Crear variables de entorno en el contenedor.
+--network: Indicarle una red al contenedor, por defecto bridge.
+--ip: Asignar una IP al contenedor.
+--hostname: Indica un nombre para el contenedor.
+--memory: Establece límite de memoria para el contenedor.
+--cpus o --cpuset-cpus: Limita un número de CPUs que podrá acceder el contenedor.
+
+Volumenes:
+- docker volume ls (lista de volumenes)
+- docker volume create nombre (crea un volumen)
+- docker volume rm mi_volumen (elimina mi_volumen)
+- docker volume prune -f (elimina volumenes anonimos no utilizado por contenedores)
+
+Redes:
+- docker network ls
+- docker network create --subnet=192.168.40.0/24 netC1
+- docker network connect netC1 mariadbs
+- docker network disconnect netC1 mariadbs
