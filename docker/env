@@ -1,0 +1,5 @@
+# n8n
+N8N_ENCRYPTION_KEY=HrlnWd55R2QU5EZOo1MjcZaGVS9dAVhF3Rrnuf8yt+o=
+
+# --- Postgres ---
+POSTGRES_PASSWORD=root123
