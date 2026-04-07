@@ -6,7 +6,7 @@ services:
     container_name: n8n
     restart: unless-stopped
     ports:
-      - "5679:5678"
+      - "5678:5678"
     environment:
       # opcional (n8n genera una de forma automatica, debe recuperarse para volver a crear contenedor)
       - N8N_ENCRYPTION_KEY=${N8N_ENCRYPTION_KEY}
