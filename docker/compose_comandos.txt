@@ -1,0 +1,32 @@
+# Levantar servicios
+docker compose up -d              # Levanta todo en background
+docker compose up                 # Levanta mostrando logs
+
+# Detener / eliminar
+docker compose down               # Detiene y elimina contenedores/red
+docker compose down -v            # También elimina volúmenes
+
+# Build / imágenes
+docker compose build              # Construye imágenes
+docker compose pull               # Descarga imágenes
+
+# Estado y logs
+docker compose ps                 # Lista servicios
+docker compose logs               # Ver logs
+docker compose logs -f            # Logs en tiempo real
+
+# Servicios individuales
+docker compose start <svc>        # Inicia un servicio
+docker compose stop <svc>         # Detiene un servicio
+docker compose restart <svc>      # Reinicia un servicio
+
+# Ejecutar dentro de un contenedor
+docker compose exec <svc> sh      # Shell en contenedor
+docker compose exec <svc> <cmd>   # Ejecutar comando
+
+# Ejecutar servicio puntual
+docker compose run <svc> <cmd>    # One-off container
+
+# Debug / info
+docker compose config             # Ver config final
+docker compose ls                 # Listar proyectos
