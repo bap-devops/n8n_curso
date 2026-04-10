@@ -1,0 +1,414 @@
+{
+  "name": "Clase 1 - merge_ejemplos",
+  "nodes": [
+    {
+      "parameters": {
+        "fieldToSplitOut": "data",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.splitOut",
+      "typeVersion": 1,
+      "position": [
+        -80,
+        -304
+      ],
+      "id": "9bc7ea57-af8e-4b02-9ca8-1a361444385d",
+      "name": "Split Out"
+    },
+    {
+      "parameters": {
+        "fieldToSplitOut": "data",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.splitOut",
+      "typeVersion": 1,
+      "position": [
+        -80,
+        -160
+      ],
+      "id": "81b27634-fdb1-4224-a9aa-61787acd8ff0",
+      "name": "Split Out1"
+    },
+    {
+      "parameters": {
+        "fieldToSplitOut": "data",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.splitOut",
+      "typeVersion": 1,
+      "position": [
+        -80,
+        0
+      ],
+      "id": "7d2faae9-19c4-458d-9bfb-5a6225cc443b",
+      "name": "Split Out2"
+    },
+    {
+      "parameters": {
+        "fieldToSplitOut": "data",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.splitOut",
+      "typeVersion": 1,
+      "position": [
+        -80,
+        160
+      ],
+      "id": "e58f4852-d630-49f5-a87c-83bc0399a006",
+      "name": "Split Out3"
+    },
+    {
+      "parameters": {
+        "amount": 1
+      },
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1.1,
+      "position": [
+        864,
+        -48
+      ],
+      "id": "ccd1903e-df14-4b2d-a1fa-7f81c2982e3e",
+      "name": "Wait",
+      "webhookId": "b74580e5-3a00-457c-8dd3-c0cc5cb003aa"
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        -592,
+        -112
+      ],
+      "id": "51595323-7c90-44b0-b984-7e2f8fd94ec2",
+      "name": "clic"
+    },
+    {
+      "parameters": {
+        "mode": "combine",
+        "fieldsToMatchString": "id",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3.2,
+      "position": [
+        176,
+        -224
+      ],
+      "id": "584b19cc-da3b-40fb-a4cc-98861e9576d6",
+      "name": "Comb por id"
+    },
+    {
+      "parameters": {
+        "mode": "combine",
+        "combineBy": "combineByPosition",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3.2,
+      "position": [
+        176,
+        -16
+      ],
+      "id": "10e4afdf-4ef8-43e7-a67a-15729c23ea70",
+      "name": "Comb por pos"
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3.2,
+      "position": [
+        448,
+        -144
+      ],
+      "id": "67ff34f7-98f7-49bf-8c63-150520700867",
+      "name": "Append"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "n8n-nodes-base.splitInBatches",
+      "typeVersion": 3,
+      "position": [
+        656,
+        -144
+      ],
+      "id": "fd081d92-19aa-4c39-93ec-1853e507377d",
+      "name": "For Each"
+    },
+    {
+      "parameters": {
+        "aggregate": "aggregateAllItemData",
+        "include": "specifiedFields",
+        "fieldsToInclude": "nombre,edad",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.aggregate",
+      "typeVersion": 1,
+      "position": [
+        1008,
+        -160
+      ],
+      "id": "85e68963-e6a4-4c98-a830-f59ceb2b0bd9",
+      "name": "N items a 1"
+    },
+    {
+      "parameters": {
+        "mode": "raw",
+        "jsonOutput": "{\n  \"data\": [\n    { \"id\": 3, \"edad\": 32 },\n    { \"id\": 4, \"edad\": 28 }\n  ]\n}",
+        "options": {
+          "dotNotation": false
+        }
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -288,
+        -304
+      ],
+      "id": "891a5802-61f7-43d1-ba91-f6e88364bc0b",
+      "name": "id y edad",
+      "retryOnFail": false
+    },
+    {
+      "parameters": {
+        "mode": "raw",
+        "jsonOutput": "{\n  \"data\": [\n    { \"id\": 3, \"nombre\": \"Pedro\" },\n    { \"id\": 4, \"nombre\": \"Mariela\" }\n  ]\n}\n",
+        "options": {
+          "dotNotation": false
+        }
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -288,
+        -160
+      ],
+      "id": "d81898a8-14e2-4e08-a71d-f588a20d91e8",
+      "name": "id y nombre"
+    },
+    {
+      "parameters": {
+        "mode": "raw",
+        "jsonOutput": "{\n  \"data\": [\n    { \"nombre\": \"Juan\" },\n    { \"nombre\": \"Ana\" }\n  ]\n}\n",
+        "options": {
+          "dotNotation": false
+        }
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -288,
+        0
+      ],
+      "id": "a73cbcaa-f7d1-4fbb-9873-f913f9f55cae",
+      "name": "nombre"
+    },
+    {
+      "parameters": {
+        "mode": "raw",
+        "jsonOutput": "{\n  \"data\": [\n    { \"edad\": 30 },\n    { \"edad\": 25 }\n  ]\n}\n",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -288,
+        160
+      ],
+      "id": "50f14094-4a90-4203-8935-bd403c9c75aa",
+      "name": "edad"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Split Out": {
+      "main": [
+        [
+          {
+            "node": "Comb por id",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Split Out1": {
+      "main": [
+        [
+          {
+            "node": "Comb por id",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "Split Out2": {
+      "main": [
+        [
+          {
+            "node": "Comb por pos",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Split Out3": {
+      "main": [
+        [
+          {
+            "node": "Comb por pos",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "Wait": {
+      "main": [
+        [
+          {
+            "node": "For Each",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "clic": {
+      "main": [
+        [
+          {
+            "node": "nombre",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "edad",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "id y nombre",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "id y edad",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Comb por id": {
+      "main": [
+        [
+          {
+            "node": "Append",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Comb por pos": {
+      "main": [
+        [
+          {
+            "node": "Append",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "Append": {
+      "main": [
+        [
+          {
+            "node": "For Each",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "For Each": {
+      "main": [
+        [
+          {
+            "node": "N items a 1",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Wait",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "id y edad": {
+      "main": [
+        [
+          {
+            "node": "Split Out",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "id y nombre": {
+      "main": [
+        [
+          {
+            "node": "Split Out1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "nombre": {
+      "main": [
+        [
+          {
+            "node": "Split Out2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "edad": {
+      "main": [
+        [
+          {
+            "node": "Split Out3",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate",
+    "availableInMCP": false
+  },
+  "versionId": "7b7c2276-e8c8-474f-ad3e-3322682d83e8",
+  "meta": {
+    "instanceId": "c0bc0bd0e99eacf1230910ab0f27a550a8d04c31ac2a9d768c1c1d3a4f993cf9"
+  },
+  "id": "9QZlSiyxgy8U30Ce",
+  "tags": []
+}
