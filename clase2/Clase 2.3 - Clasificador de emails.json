@@ -1,0 +1,387 @@
+{
+  "name": "Clase 2.3 - Clasificador de emails",
+  "nodes": [
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        -1552,
+        -576
+      ],
+      "id": "cf902445-05ad-42b6-87a6-8ee425e7b8fb",
+      "name": "When clicking ‘Execute workflow’"
+    },
+    {
+      "parameters": {
+        "mode": "raw",
+        "jsonOutput": "{\n  \"emails\": [\n  {\n    \"id\": \"mail_001\",\n    \"from\": \"juan@empresa.com\",\n    \"body\": \"Hola, compré su software ayer pero no puedo iniciar sesión en mi cuenta. El sistema dice que mi contraseña es incorrecta aunque la acabo de cambiar. ¿Podrían ayudarme?\"\n  },\n  {\n    \"id\": \"mail_002\",\n    \"from\": \"carlos@empresa.com\",\n    \"body\": \"Hola, estoy evaluando herramientas para mi empresa y me gustaría saber cuánto cuesta su plan profesional para 25 usuarios. ¿Tienen precios por volumen?\"\n  },\n  {\n    \"id\": \"mail_003\",\n    \"from\": \"promo@ofertas-online.com\",\n    \"body\": \"Estimado usuario, has sido seleccionado para ganar un iPhone gratis. Haz clic en el siguiente enlace para reclamar tu premio ahora mismo: http://premio-gratis-ejemplo.com\"\n  },\n  {\n    \"id\": \"mail_004\",\n    \"from\": \"ops@tienda.com\",\n    \"body\": \"Buen día, nuestro sistema dejó de funcionar completamente después de la última actualización y no podemos procesar pedidos. Necesitamos ayuda urgente porque estamos perdiendo ventas.\"\n  },\n  {\n    \"id\": \"mail_005\",\n    \"from\": \"mariana@cliente.com\",\n    \"body\": \"Hola, solo quería felicitarlos por el producto. Lo estamos usando hace unos meses y nos resultó muy útil para organizar el trabajo del equipo.\"\n  }\n]\n  \n  \n}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -1328,
+        -576
+      ],
+      "id": "86f46087-1d41-4310-b945-f0fc868e953e",
+      "name": "Edit Fields"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=Analiza el siguiente email y clasifícalo.\nResponde solo con json:\n{\n  \"categoria\": \"ventas | soporte | spam | otro\",\n  \"prioridad\": \"alta | media | baja\",\n  \"requiere_respuesta\": true | false\n}\n\nEmail:\n{{ $json.body.slice(0, 250) }}",
+        "batching": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.chainLlm",
+      "typeVersion": 1.9,
+      "position": [
+        -944,
+        -464
+      ],
+      "id": "307e6503-8b62-49fa-8726-e1d12ba2dc77",
+      "name": "Basic LLM Chain"
+    },
+    {
+      "parameters": {
+        "modelName": "models/gemma-3-12b-it",
+        "options": {
+          "maxOutputTokens": 200
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1,
+      "position": [
+        -816,
+        -224
+      ],
+      "id": "8217b577-7964-4b7c-b0d6-a6cd1b7a48c9",
+      "name": "Google Gemini Chat Model",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "Iz6KpYgcPoiBMNnR",
+          "name": "Google Gemini(PaLM) Api account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "return $input.all().map(item => {\n  try {\n    const text = item.json.text.\n      replace(/```json\\s*|\\s*```/g, \"\").trim();\n    const res = JSON.parse(text);\n    return { json: res };\n  } catch (error) {\n    throw new Error('El modelo no devolvió JSON válido');\n  }\n});"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -608,
+        -464
+      ],
+      "id": "859d72ea-21ce-4743-9fd0-ed5ca573f48b",
+      "name": "Code in JavaScript"
+    },
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 3
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $json.categoria }}",
+                    "rightValue": "soporte",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    },
+                    "id": "e32ba9da-76b5-4db6-8d95-40ebe045e420"
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "soporte"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 3
+                },
+                "conditions": [
+                  {
+                    "id": "eb1ebd4d-1c7d-40a8-90c2-74d569983619",
+                    "leftValue": "={{ $json.categoria }}",
+                    "rightValue": "ventas",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "ventas"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 3
+                },
+                "conditions": [
+                  {
+                    "id": "af5e1db1-c997-45b7-9bd9-f1e1a72281a7",
+                    "leftValue": "={{ $json.categoria }}",
+                    "rightValue": "spam",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "spam"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 3
+                },
+                "conditions": [
+                  {
+                    "id": "11c34211-d433-4215-96e2-58b0ac06c648",
+                    "leftValue": "={{ $json.categoria }}",
+                    "rightValue": "otro",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "otro"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3.4,
+      "position": [
+        -192,
+        -592
+      ],
+      "id": "5650f649-8f98-4fe0-a3db-a09790f6a0e0",
+      "name": "Switch",
+      "alwaysOutputData": false
+    },
+    {
+      "parameters": {
+        "fieldToSplitOut": "emails",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.splitOut",
+      "typeVersion": 1,
+      "position": [
+        -1104,
+        -576
+      ],
+      "id": "f45d8c6f-a65e-4c84-8140-a05bf2079ef9",
+      "name": "Split Out"
+    },
+    {
+      "parameters": {
+        "mode": "combine",
+        "combineBy": "combineByPosition",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3.2,
+      "position": [
+        -384,
+        -560
+      ],
+      "id": "603afc7c-7a76-4d0d-8a9b-824ca6d946aa",
+      "name": "Merge"
+    },
+    {
+      "parameters": {
+        "jsCode": "const items = $input.all();\n\nconst fecha = new Date().toLocaleDateString(\"es-AR\");\n\nlet lista = \"\";\n\nfor (const item of items) {\n  const mail = item.json;\n\n  lista += `\n  <div class=\"mail\">\n\n    <div class=\"meta\">\n      ID: <span class=\"id\">${mail.id}</span>\n    </div>\n\n    <div class=\"meta\">\n      Remitente: <span class=\"from\">${mail.from}</span>\n      ${mail.prioridad ? `<span class=\"tag prioridad-${mail.prioridad}\">${mail.prioridad}</span>` : \"\"}\n    </div>\n\n    <div class=\"body\">\n      ${mail.body}\n    </div>\n\n  </div>\n  `;\n}\n\nconst html = `\n<!DOCTYPE html>\n<html>\n<head>\n<meta charset=\"UTF-8\">\n\n<style>\n\nbody{\n  font-family: Arial, Helvetica, sans-serif;\n  background:#f4f6f8;\n  padding:30px;\n}\n\n.container{\n  max-width:720px;\n  margin:auto;\n  background:white;\n  border-radius:10px;\n  padding:28px;\n  box-shadow:0 4px 14px rgba(0,0,0,0.08);\n}\n\n.header{\n  border-bottom:1px solid #eee;\n  padding-bottom:12px;\n  margin-bottom:25px;\n}\n\n.title{\n  font-size:22px;\n  font-weight:700;\n  color:#1f2937;\n}\n\n.date{\n  font-size:13px;\n  color:#6b7280;\n  margin-top:4px;\n}\n\n.mail{\n  border:1px solid #e5e7eb;\n  border-radius:8px;\n  padding:16px;\n  margin-bottom:16px;\n  background:#fafafa;\n}\n\n.meta{\n  font-size:13px;\n  color:#6b7280;\n}\n\n.id{\n  font-weight:600;\n  color:#374151;\n}\n\n.from{\n  font-weight:600;\n  color:#111827;\n}\n\n.body{\n  margin-top:10px;\n  font-size:14px;\n  line-height:1.5;\n  color:#374151;\n}\n\n.tag{\n  display:inline-block;\n  font-size:11px;\n  padding:3px 8px;\n  border-radius:4px;\n  margin-left:6px;\n}\n\n.prioridad-alta{\n  background:#fee2e2;\n  color:#b91c1c;\n}\n\n.footer{\n  margin-top:25px;\n  text-align:center;\n  font-size:12px;\n  color:#9ca3af;\n}\n\n</style>\n</head>\n\n<body>\n\n<div class=\"container\">\n\n<div class=\"header\">\n  <div class=\"title\">📬 Correos que requieren revisión</div>\n  <div class=\"date\">${fecha}</div>\n</div>\n\n${lista}\n\n<div class=\"footer\">\nGenerado automáticamente por el sistema\n</div>\n\n</div>\n\n</body>\n</html>\n`;\n\nreturn [\n  {\n    json: {\n      html\n    }\n  }\n];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        80,
+        -608
+      ],
+      "id": "bfe734b1-9d83-4202-941e-343bca261b90",
+      "name": "Code in JavaScript1"
+    },
+    {
+      "parameters": {
+        "sendTo": "alejandro.benassi@dicsys.com",
+        "subject": "Resumen mensajes para sector de SOPORTE",
+        "message": "={{ $json.html }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.2,
+      "position": [
+        272,
+        -608
+      ],
+      "id": "41d1a05e-b127-401d-8990-59ba18a031f7",
+      "name": "Send a message",
+      "webhookId": "847f2915-8496-4621-bd6b-17cade348f9b",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "7mb3DkvBBXs99ZyP",
+          "name": "Gmail account"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "When clicking ‘Execute workflow’": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Gemini Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Basic LLM Chain",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields": {
+      "main": [
+        [
+          {
+            "node": "Split Out",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Basic LLM Chain": {
+      "main": [
+        [
+          {
+            "node": "Code in JavaScript",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code in JavaScript": {
+      "main": [
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "Split Out": {
+      "main": [
+        [
+          {
+            "node": "Basic LLM Chain",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Merge": {
+      "main": [
+        [
+          {
+            "node": "Switch",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Switch": {
+      "main": [
+        [
+          {
+            "node": "Code in JavaScript1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code in JavaScript1": {
+      "main": [
+        [
+          {
+            "node": "Send a message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate",
+    "availableInMCP": false
+  },
+  "versionId": "8d2b2f9e-4150-4f85-b44f-6e380f82340d",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "c0bc0bd0e99eacf1230910ab0f27a550a8d04c31ac2a9d768c1c1d3a4f993cf9"
+  },
+  "id": "heq5X80CGgF1FpIz",
+  "tags": [
+    {
+      "updatedAt": "2026-04-12T14:27:34.062Z",
+      "createdAt": "2026-04-12T14:27:34.062Z",
+      "id": "NQqlJl04O9wnq9P3",
+      "name": "Clase 2"
+    }
+  ]
+}
